@@ -62,7 +62,7 @@ export default function App() {
                         <div className="w-1/2 flex justify-center">
                             <img
                                 className="h-32 w-auto dark:invert"
-                                src="/src/assets/logo.svg"
+                                src="logo.svg"
                                 alt="Your Company"
                             />
                         </div>
@@ -81,7 +81,7 @@ export default function App() {
 
                             <Subheading>
                                 This website is a fun project made by{" "}
-                                <Link href="" className="underline">
+                                <Link href="https://darenhua.netlify.app/">
                                     Daren Hua
                                 </Link>{" "}
                                 in the spirit of Chinese New Year. Made with

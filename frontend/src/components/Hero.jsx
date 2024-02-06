@@ -26,7 +26,7 @@ export default function Hero() {
                 </div>
                 <img
                     className="h-32 w-auto dark:invert"
-                    src="/src/assets/logo.svg"
+                    src="logo.svg"
                     alt="Your Company"
                 />
             </div>

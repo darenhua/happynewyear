@@ -17,7 +17,7 @@ export default function Navbar() {
                         >
                             <img
                                 className="h-8 w-auto dark:invert"
-                                src="/src/assets/logo.svg"
+                                src="logo.svg"
                                 alt="Your Company"
                             />
                         </Link>

@@ -8,15 +8,14 @@ import {
     PaginationPage,
     PaginationPrevious,
 } from "@/components/catalyst/pagination";
+import Subheading from "@/components/Subheading";
 
-export default function PaginatedEmailsTable({ tableData }) {
-    console.log(tableData);
+export default function PaginatedEmailsTable({ tableData, recordCount }) {
     const [currentPageNum, setCurrentPageNum] = useState(0);
 
     const pageSize = 10;
     const numPages = Math.ceil(tableData.length / pageSize);
     const lastPage = numPages - 1;
-    console.log(numPages);
 
     const setPaginationData = () => {
         const start = currentPageNum * pageSize;
@@ -69,8 +68,15 @@ export default function PaginatedEmailsTable({ tableData }) {
     const currentPageData = setPaginationData();
     const currentPageRange = setPaginationRange();
 
-    console.log(currentPageData);
-    console.log(currentPageNum, lastPage);
+    if (recordCount === 0) {
+        return (
+            <div className="flex flex-col items-center w-full min-h-[200px] relative">
+                <Subheading>
+                    Something went wrong, please try again later.
+                </Subheading>
+            </div>
+        );
+    }
     return (
         <div className="flex flex-col items-center w-full min-h-[700px] relative">
             <EmailsTable tableData={currentPageData} className="w-full" />

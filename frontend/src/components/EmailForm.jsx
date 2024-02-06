@@ -5,8 +5,8 @@ import {
     FieldGroup,
     Fieldset,
     Label,
-    Legend,
 } from "@/components/catalyst/fieldset";
+import { Link } from "@/components/catalyst/link";
 import { Text, Strong } from "@/components/catalyst/text";
 import {
     Dialog,
@@ -19,16 +19,38 @@ import { Switch, SwitchField } from "@/components/catalyst/switch";
 import { Input } from "@/components/catalyst/input";
 import { Button } from "@/components/catalyst/button";
 import { PlusIcon } from "@heroicons/react/16/solid";
+import {
+    Listbox,
+    ListboxLabel,
+    ListboxOption,
+} from "@/components/catalyst/listbox";
 
 export default function EmailForm({ handlePending }) {
     const [isOpen, setIsOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
-        target: "",
+        target_email: "",
+        target_name: "",
+        target_zodiac: "",
         private: true,
     });
 
+    const zodiacs = [
+        "Unknown",
+        "Rat",
+        "Ox",
+        "Tiger",
+        "Rabbit",
+        "Dragon",
+        "Snake",
+        "Horse",
+        "Goat",
+        "Monkey",
+        "Rooster",
+        "Dog",
+        "Pig",
+    ];
     const insertEmail = async () => {
         const endpoint = `${import.meta.env.VITE_API_URL}/history`;
 
@@ -134,16 +156,19 @@ export default function EmailForm({ handlePending }) {
         setFormData(formData);
     };
 
+    const handleOptionChange = (e) => {
+        formData["target_zodiac"] = e;
+        setFormData(formData);
+    };
+
     return (
         <>
             <div id="new-email-form" className="scroll-mt-48 w-full">
-                <h3 className="font-extrabold text-2xl mb-4 text-slate-700 dark:text-slate-300">
-                    Click the "New email" button to spread the luck.
-                </h3>
                 <div className="flex w-full items-center justify-center rounded-xl py-8 border-dashed border-2 border-slate-700 mb-16">
                     <Button
                         type="button"
                         className="w-64 h-12"
+                        color="red"
                         onClick={() => setIsOpen(true)}
                     >
                         <PlusIcon />
@@ -154,8 +179,8 @@ export default function EmailForm({ handlePending }) {
             <Dialog open={isOpen} onClose={setIsOpen} size="3xl">
                 <DialogTitle>New email details</DialogTitle>
                 <DialogDescription>
-                    Brighten someone's day today! Fill out all info below to
-                    send the free email.
+                    Brighten someone&apos;s day today! Fill out all info below
+                    to send the free email.
                 </DialogDescription>
                 <DialogBody>
                     <Fieldset>
@@ -174,34 +199,68 @@ export default function EmailForm({ handlePending }) {
                                     <Label>Recipient name</Label>
                                     <Input
                                         placeholder="Jane Doe"
-                                        name="name"
-                                        id="name"
+                                        name="target_name"
+                                        id="target_name"
                                         onChange={handleChange}
                                     />
                                 </Field>
                             </div>
-                            <Field>
-                                <Label>Recipient</Label>
-                                <Input
-                                    placeholder="darenhua@happyyearofthedragon.com"
-                                    name="target"
-                                    id="target"
-                                    type="email"
-                                    onChange={handleChange}
-                                />
-                                <Description>
-                                    Email addresses will not be shown publicly
-                                    to prevent doxxing.
-                                </Description>
-                            </Field>
+                            <div className="grid grid-cols-2 gap-4">
+                                <Field>
+                                    <Label>Recipient email</Label>
+                                    <Input
+                                        placeholder="darenhua@happyyearofthedragon.com"
+                                        name="target_email"
+                                        id="target_email"
+                                        type="email"
+                                        onChange={handleChange}
+                                    />
+
+                                    <Description>
+                                        Email addresses will not be shown
+                                        publicly.
+                                    </Description>
+                                </Field>
+                                <Field>
+                                    <Label>Recipient zodiac</Label>
+                                    <Listbox
+                                        name="target_zodiac"
+                                        id="target_zodiac"
+                                        className="my-3"
+                                        placeholder="Dragon"
+                                        onChange={handleOptionChange}
+                                    >
+                                        {zodiacs.map((zodiac) => (
+                                            <ListboxOption
+                                                value={zodiac}
+                                                key={zodiac}
+                                            >
+                                                <ListboxLabel>
+                                                    {zodiac}
+                                                </ListboxLabel>
+                                            </ListboxOption>
+                                        ))}
+                                    </Listbox>
+                                    <Description>
+                                        Zodiac is based on birth year.{" "}
+                                        <Link
+                                            target="_blank"
+                                            href="https://www.astrosofa.com/horoscope/calculate-chinese-zodiac-sign"
+                                        >
+                                            See more.
+                                        </Link>
+                                    </Description>
+                                </Field>
+                            </div>
 
                             <SwitchField>
                                 <Label>Make private</Label>
                                 <Description>
                                     If you do not want others to see your name,
-                                    recipient name, and message, then private
-                                    will hide it from the table. Your email will
-                                    still be sent if you enable private.
+                                    recipient name, and time sent, then private
+                                    will hide it from the table. Zodiac will
+                                    still be shown. Your email will still be
+                                    sent if you enable private.
                                 </Description>
                                 <Switch
                                     name="private"

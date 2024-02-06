@@ -9,7 +9,13 @@ import {
 } from "@/components/catalyst/table";
 
 export default function EmailsTable({ tableData, className }) {
-    const columnHeaders = ["Name", "Recipient", "Time Sent", "Status"];
+    const columnHeaders = [
+        "Name",
+        "Recipient Name",
+        "Zodiac",
+        "Time Sent",
+        "Status",
+    ];
     return (
         <Table striped className={className}>
             <TableHead>
@@ -25,7 +31,7 @@ export default function EmailsTable({ tableData, className }) {
                         key={row.timestamp}
                         className="dark:text-zinc-200"
                     >
-                        <TableCell className="font-medium">
+                        <TableCell>
                             <span
                                 className={
                                     row.private
@@ -33,7 +39,7 @@ export default function EmailsTable({ tableData, className }) {
                                         : ""
                                 }
                             >
-                                {row.name}
+                                {row?.name}
                             </span>
                         </TableCell>
                         <TableCell>
@@ -44,7 +50,18 @@ export default function EmailsTable({ tableData, className }) {
                                         : ""
                                 }
                             >
-                                {row.target}
+                                {row?.target_name}
+                            </span>
+                        </TableCell>
+                        <TableCell>
+                            <span
+                                className={
+                                    row?.target_zodiac === "Dragon"
+                                        ? "text-red-500 font-bold"
+                                        : ""
+                                }
+                            >
+                                {row?.target_zodiac}
                             </span>
                         </TableCell>
                         <TableCell className="dark:text-zinc-500">
@@ -55,7 +72,7 @@ export default function EmailsTable({ tableData, className }) {
                                         : ""
                                 }
                             >
-                                {row.timestamp}
+                                {row?.timestamp}
                             </span>
                         </TableCell>
                         <TableCell>

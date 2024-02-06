@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 import PaginatedEmailsTable from "./components/PaginatedEmailsTable";
 import EmailForm from "./components/EmailForm";
 import Navbar from "./components/Navbar";
-import { Button } from "@/components/catalyst/button";
+import Hero from "@/components/Hero";
+import Heading from "@/components/Heading";
+import Subheading from "@/components/Subheading";
+import { Link } from "@/components/catalyst/link";
 
 export default function App() {
     const [tableData, setTableData] = useState([]);
@@ -42,40 +45,80 @@ export default function App() {
         getEmails();
     }, [pending]);
 
+    console.log(tableData);
     const handlePending = (bool) => {
         setPending(bool);
     };
+
+    const recordCount = tableData.length;
 
     return (
         <div className="min-h-screen ">
             <Navbar />
             <div className="mx-64">
-                <div className="min-h-screen">
+                <Hero />
+                <div id="about" className="scroll-mt-48 mt-24 mb-48">
                     <div className="flex gap-14 items-center">
-                        <div className="max-w-xl">
-                            <h1 className="text-slate-900 dark:text-white mt-20 max-w-[36rem] text-3xl font-extrabold tracking-tight  sm:text-7xl xl:max-w-[43.5rem]">
-                                Tell your friends{" "}
-                                <span>Happy Year of the Dragon</span>
-                            </h1>
-                            <p className="mt-8 text-md text-slate-700 dark:text-slate-300">
-                                Celebrate the lunar new year by sending your
-                                loved ones a lucky email!
-                            </p>
-                            <Button className="my-8" outline>
-                                <a href="#new-email-form">
-                                    Send an email right now
-                                </a>
-                            </Button>
+                        <div className="w-1/2 flex justify-center">
+                            <img
+                                className="h-32 w-auto dark:invert"
+                                src="/src/assets/logo.svg"
+                                alt="Your Company"
+                            />
                         </div>
-                        <img
-                            className="h-32 w-auto dark:invert"
-                            src="/src/assets/logo.svg"
-                            alt="Your Company"
-                        />
+                        <div className="w-1/2">
+                            <Heading>About</Heading>
+                            <Subheading>
+                                Fill out the form in the dialog box below to
+                                send an email to a friend. No emails or
+                                sensitive data is stored. The email states that
+                                you sent the mail, contains pretty lunar new
+                                year images, and has a description of the
+                                recipient&apos;s fortune based on their Zodiac
+                                sign. The mockup next to this paragraph shows
+                                what the email would look like.
+                            </Subheading>
+
+                            <Subheading>
+                                This website is a fun project made by{" "}
+                                <Link href="" className="underline">
+                                    Daren Hua
+                                </Link>{" "}
+                                in the spirit of Chinese New Year. Made with
+                                React, Flask, and{" "}
+                                <Link
+                                    href="https://resend.com/"
+                                    target="_blank"
+                                >
+                                    resend
+                                </Link>
+                                .
+                            </Subheading>
+                        </div>
                     </div>
                 </div>
-                <EmailForm handlePending={handlePending} />
-                <PaginatedEmailsTable tableData={tableData} />
+                <div className="mb-32">
+                    <Heading>Form</Heading>
+                    <Subheading>
+                        Click the &quot;New email&quot; button to spread the
+                        luck.
+                    </Subheading>
+                    <EmailForm handlePending={handlePending} />
+                </div>
+                <div className="">
+                    <Heading>Table</Heading>
+                    <Subheading>
+                        We&apos;ve sent{" "}
+                        <span className="font-extrabold text-xl text-red-500">
+                            {recordCount}
+                        </span>{" "}
+                        Year of the Dragon emails to date.
+                    </Subheading>
+                    <PaginatedEmailsTable
+                        tableData={tableData}
+                        recordCount={recordCount}
+                    />
+                </div>
             </div>
         </div>
     );

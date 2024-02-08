@@ -6,6 +6,7 @@ from datetime import datetime
 from flask_cors import CORS
 import boto3
 from boto3.dynamodb.conditions import Key
+import json
 
 load_dotenv()
 resend.api_key = os.environ["RESEND_API_KEY"]
@@ -14,7 +15,10 @@ CORS(app)
 dynamodb = boto3.resource("dynamodb")
 tableName = "resend-app"
 table = dynamodb.Table(tableName)
-timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+with open("./email.html") as file:
+    html = file.read()
+with open("./zodiacs.json") as file:
+    zodiacs_dict = json.load(file)
 
 
 @app.route("/history/<name>/<timestamp>", methods=["PATCH"])
@@ -43,6 +47,14 @@ def getEmails():
             Limit=2000,
         )
         data = response["Items"]
+
+        for record in data:
+            if record["private"]:
+                for key in record:
+                    original = record[key]
+                    if isinstance(original, str):
+                        redacted = "*" * len(original)
+                        record[key] = redacted
         return jsonify(data), 200
     except Exception as e:
         print(e)
@@ -56,9 +68,10 @@ def insertEmail():
 
     # Validate request data
     name = req_data.get("name")
-    target = req_data.get("target")
+    target_name = req_data.get("target_name")
+    target_zodiac = req_data.get("target_zodiac")
     private = req_data.get("private")
-    if not all([name, target, private is not None]):
+    if not all([name, target_name, private is not None]):
         return jsonify({"error": "Missing required fields"}), 400
 
     defaultParams = {
@@ -68,7 +81,13 @@ def insertEmail():
     }
     try:
         response = table.put_item(
-            Item={"name": name, "target": target, "private": private, **defaultParams}
+            Item={
+                "name": name,
+                "target_name": target_name,
+                "target_zodiac": target_zodiac,
+                "private": private,
+                **defaultParams,
+            }
         )
         return (
             jsonify(
@@ -93,18 +112,26 @@ def sendEmail():
 
     # Validate request data
     name = req_data.get("name")
-    target = req_data.get("target")
-    if not all([name, target]):
+    target_email = req_data.get("target_email")
+    target_name = req_data.get("target_name")
+    target_zodiac = req_data.get("target_zodiac")
+    if not all([name, target_email, target_name]):
         return jsonify({"error": "Missing required fields"}), 400
 
+    # Get Copy Data
+    zodiac_copy = zodiacs_dict[target_zodiac]
+
     # Send Email
-    greeting_subject = f"Happy Chinese New Year {name}"
+    greeting_subject = f"{name} wishes you a Happy Year of the Dragon!"
+    greeting_email = html.format(
+        name=name, target_name=target_name, zodiac_copy=zodiac_copy
+    )
 
     params = {
-        "from": "Daren <darenhua@happyyearofthedragon.com>",
-        "to": target,
+        "from": "Gratitudes <darenhua@happyyearofthedragon.com>",
+        "to": target_email,
         "subject": greeting_subject,
-        "html": "<div><p>hi</p> <p>daren</p></div>",
+        "html": greeting_email,
     }
 
     try:

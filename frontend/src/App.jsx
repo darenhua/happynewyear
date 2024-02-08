@@ -3,9 +3,9 @@ import PaginatedEmailsTable from "./components/PaginatedEmailsTable";
 import EmailForm from "./components/EmailForm";
 import Navbar from "./components/Navbar";
 import Hero from "@/components/Hero";
+import About from "@/components/About";
 import Heading from "@/components/Heading";
 import Subheading from "@/components/Subheading";
-import { Link } from "@/components/catalyst/link";
 
 export default function App() {
     const [tableData, setTableData] = useState([]);
@@ -53,50 +53,11 @@ export default function App() {
     const recordCount = tableData.length;
 
     return (
-        <div className="min-h-screen ">
+        <div className="min-h-screen">
             <Navbar />
-            <div className="mx-64">
+            <div className="mx-64 -xl:mx-32 -sm:mx-16 -md:mx-20">
                 <Hero />
-                <div id="about" className="scroll-mt-48 mt-24 mb-48">
-                    <div className="flex gap-14 items-center">
-                        <div className="w-1/2 flex justify-center">
-                            <img
-                                className="h-32 w-auto dark:invert"
-                                src="logo.svg"
-                                alt="Your Company"
-                            />
-                        </div>
-                        <div className="w-1/2">
-                            <Heading>About</Heading>
-                            <Subheading>
-                                Fill out the form in the dialog box below to
-                                send an email to a friend. No emails or
-                                sensitive data is stored. The email states that
-                                you sent the mail, contains pretty lunar new
-                                year images, and has a description of the
-                                recipient&apos;s fortune based on their Zodiac
-                                sign. The mockup next to this paragraph shows
-                                what the email would look like.
-                            </Subheading>
-
-                            <Subheading>
-                                This website is a fun project made by{" "}
-                                <Link href="https://darenhua.netlify.app/">
-                                    Daren Hua
-                                </Link>{" "}
-                                in the spirit of Chinese New Year. Made with
-                                React, Flask, and{" "}
-                                <Link
-                                    href="https://resend.com/"
-                                    target="_blank"
-                                >
-                                    resend
-                                </Link>
-                                .
-                            </Subheading>
-                        </div>
-                    </div>
-                </div>
+                <About />
                 <div className="mb-32">
                     <Heading>Form</Heading>
                     <Subheading>

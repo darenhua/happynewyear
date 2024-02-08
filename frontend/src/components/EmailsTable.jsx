@@ -8,6 +8,20 @@ import {
     TableRow,
 } from "@/components/catalyst/table";
 
+function Redacted({ isPrivate, children }) {
+    return (
+        <span
+            className={
+                isPrivate
+                    ? "select-none text-gray-700 bg-gray-700 dark:text-slate-500 dark:bg-slate-500 px-3 py-0.5 rounded-lg"
+                    : ""
+            }
+        >
+            {children}
+        </span>
+    );
+}
+
 export default function EmailsTable({ tableData, className }) {
     const columnHeaders = [
         "Name",
@@ -17,7 +31,7 @@ export default function EmailsTable({ tableData, className }) {
         "Status",
     ];
     return (
-        <Table striped className={className}>
+        <Table dense striped className={className}>
             <TableHead>
                 <TableRow>
                     {columnHeaders.map((name, id) => (
@@ -26,54 +40,35 @@ export default function EmailsTable({ tableData, className }) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {tableData.map((row) => (
-                    <TableRow
-                        key={row.timestamp}
-                        className="dark:text-zinc-200"
-                    >
+                {tableData.map((row, id) => (
+                    <TableRow key={id} className="dark:text-zinc-200">
                         <TableCell>
-                            <span
-                                className={
-                                    row.private
-                                        ? "select-none text-gray-700 bg-gray-700 dark:text-slate-500 dark:bg-slate-500 px-3 py-0.5 rounded-lg"
-                                        : ""
-                                }
-                            >
-                                {row?.name}
-                            </span>
+                            <Redacted isPrivate={row.private}>
+                                {row.name}
+                            </Redacted>
                         </TableCell>
                         <TableCell>
-                            <span
-                                className={
-                                    row.private
-                                        ? "select-none text-gray-700 bg-gray-700 dark:text-slate-500 dark:bg-slate-500 px-3 py-0.5 rounded-lg"
-                                        : ""
-                                }
-                            >
+                            <Redacted isPrivate={row.private}>
                                 {row?.target_name}
-                            </span>
+                            </Redacted>
                         </TableCell>
                         <TableCell>
-                            <span
-                                className={
-                                    row?.target_zodiac === "Dragon"
-                                        ? "text-red-500 font-bold"
-                                        : ""
-                                }
-                            >
-                                {row?.target_zodiac}
-                            </span>
+                            <Redacted isPrivate={row.private}>
+                                <span
+                                    className={
+                                        row?.target_zodiac === "Dragon"
+                                            ? "text-red-500 font-bold"
+                                            : ""
+                                    }
+                                >
+                                    {row?.target_zodiac}
+                                </span>
+                            </Redacted>
                         </TableCell>
                         <TableCell className="dark:text-zinc-500">
-                            <span
-                                className={
-                                    row.private
-                                        ? "select-none text-gray-700 bg-gray-700 dark:text-slate-500 dark:bg-slate-500 px-3 py-0.5 rounded-lg"
-                                        : ""
-                                }
-                            >
-                                {row?.timestamp}
-                            </span>
+                            <Redacted isPrivate={row.private}>
+                                {row.timestamp}
+                            </Redacted>
                         </TableCell>
                         <TableCell>
                             {row.sent ? (

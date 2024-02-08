@@ -78,7 +78,7 @@ export default function PaginatedEmailsTable({ tableData, recordCount }) {
         );
     }
     return (
-        <div className="flex flex-col items-center w-full min-h-[700px] relative">
+        <div className="flex flex-col items-center w-full min-h-[600px] relative">
             <EmailsTable tableData={currentPageData} className="w-full" />
             <Pagination className="absolute bottom-0 mb-6">
                 <PaginationPrevious

@@ -19,11 +19,7 @@ import { Switch, SwitchField } from "@/components/catalyst/switch";
 import { Input } from "@/components/catalyst/input";
 import { Button } from "@/components/catalyst/button";
 import { PlusIcon } from "@heroicons/react/16/solid";
-import {
-    Listbox,
-    ListboxLabel,
-    ListboxOption,
-} from "@/components/catalyst/listbox";
+import { Select } from "@/components/catalyst/select";
 
 export default function EmailForm({ handlePending }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +28,7 @@ export default function EmailForm({ handlePending }) {
         name: "",
         target_email: "",
         target_name: "",
-        target_zodiac: "",
+        target_zodiac: "Unknown",
         private: true,
     });
 
@@ -156,15 +152,10 @@ export default function EmailForm({ handlePending }) {
         setFormData(formData);
     };
 
-    const handleOptionChange = (e) => {
-        formData["target_zodiac"] = e;
-        setFormData(formData);
-    };
-
     return (
         <>
             <div id="new-email-form" className="scroll-mt-48 w-full">
-                <div className="flex w-full items-center justify-center rounded-xl py-8 border-dashed border-2 border-slate-700 mb-16">
+                <div className="flex w-full items-center justify-center rounded-xl py-8 border-dashed border-2 border-slate-700 mb-16 -sm:border-none">
                     <Button
                         type="button"
                         className="w-64 h-12"
@@ -222,25 +213,20 @@ export default function EmailForm({ handlePending }) {
                                     </Description>
                                 </Field>
                                 <Field>
-                                    <Label>Recipient zodiac</Label>
-                                    <Listbox
+                                    <Label>Project status</Label>
+                                    <Select
                                         name="target_zodiac"
                                         id="target_zodiac"
-                                        className="my-3"
-                                        placeholder="Dragon"
-                                        onChange={handleOptionChange}
+                                        // className="my-3"
+                                        defaultValue="Unknown"
+                                        onChange={handleChange}
                                     >
                                         {zodiacs.map((zodiac) => (
-                                            <ListboxOption
-                                                value={zodiac}
-                                                key={zodiac}
-                                            >
-                                                <ListboxLabel>
-                                                    {zodiac}
-                                                </ListboxLabel>
-                                            </ListboxOption>
+                                            <option value={zodiac} key={zodiac}>
+                                                {zodiac}
+                                            </option>
                                         ))}
-                                    </Listbox>
+                                    </Select>
                                     <Description>
                                         Zodiac is based on birth year.{" "}
                                         <Link

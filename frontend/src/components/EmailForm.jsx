@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
     Description,
     Field,
@@ -7,7 +7,6 @@ import {
     Label,
 } from "@/components/catalyst/fieldset";
 import { Link } from "@/components/catalyst/link";
-import { Text, Strong } from "@/components/catalyst/text";
 import {
     Dialog,
     DialogActions,
@@ -20,6 +19,7 @@ import { Input } from "@/components/catalyst/input";
 import { Button } from "@/components/catalyst/button";
 import { PlusIcon } from "@heroicons/react/16/solid";
 import { Select } from "@/components/catalyst/select";
+import Filter from "bad-words";
 
 export default function EmailForm({ handlePending }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +31,8 @@ export default function EmailForm({ handlePending }) {
         target_zodiac: "Unknown",
         private: true,
     });
+
+    const [errors, setErrors] = useState({});
 
     const zodiacs = [
         "Unknown",
@@ -47,7 +49,7 @@ export default function EmailForm({ handlePending }) {
         "Dog",
         "Pig",
     ];
-    const insertEmail = async () => {
+    const insertEmail = async (formData) => {
         const endpoint = `${import.meta.env.VITE_API_URL}/history`;
 
         try {
@@ -77,7 +79,7 @@ export default function EmailForm({ handlePending }) {
         }
     };
 
-    const sendEmail = async () => {
+    const sendEmail = async (formData) => {
         const endpoint = `${import.meta.env.VITE_API_URL}/email`;
 
         try {
@@ -142,7 +144,16 @@ export default function EmailForm({ handlePending }) {
         }
     };
 
+    const filterBadWords = (formData) => {
+        const filter = new Filter();
+        const filteredForm = formData;
+        filteredForm.name = filter.clean(formData.name);
+        filteredForm.target_name = filter.clean(formData.target_name);
+        return filteredForm;
+    };
+
     const handleChange = (e) => {
+        setErrors({});
         formData[e.target.id] = e.target.value;
         setFormData(formData);
     };
@@ -150,6 +161,36 @@ export default function EmailForm({ handlePending }) {
     const handleSwitchChange = (e) => {
         formData["private"] = e;
         setFormData(formData);
+    };
+
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    };
+
+    const validateForm = () => {
+        let formIsValid = true;
+        const errors = {};
+
+        // Email validation
+        if (!formData.target_email || !validateEmail(formData.target_email)) {
+            formIsValid = false;
+            errors.target_email = true;
+        }
+
+        // Password validation
+        if (!formData.name) {
+            formIsValid = false;
+            errors.name = true;
+        }
+
+        if (!formData.target_name) {
+            formIsValid = false;
+            errors.target_name = true;
+        }
+
+        setErrors(errors);
+        return formIsValid;
     };
 
     return (
@@ -183,6 +224,7 @@ export default function EmailForm({ handlePending }) {
                                         placeholder="John Doe"
                                         name="name"
                                         id="name"
+                                        invalid={errors.name === true}
                                         onChange={handleChange}
                                     />
                                 </Field>
@@ -192,6 +234,7 @@ export default function EmailForm({ handlePending }) {
                                         placeholder="Jane Doe"
                                         name="target_name"
                                         id="target_name"
+                                        invalid={errors.target_name === true}
                                         onChange={handleChange}
                                     />
                                 </Field>
@@ -204,6 +247,7 @@ export default function EmailForm({ handlePending }) {
                                         name="target_email"
                                         id="target_email"
                                         type="email"
+                                        invalid={errors.target_email === true}
                                         onChange={handleChange}
                                     />
 
@@ -213,7 +257,7 @@ export default function EmailForm({ handlePending }) {
                                     </Description>
                                 </Field>
                                 <Field>
-                                    <Label>Project status</Label>
+                                    <Label>Recipient Zodiac</Label>
                                     <Select
                                         name="target_zodiac"
                                         id="target_zodiac"
@@ -265,13 +309,17 @@ export default function EmailForm({ handlePending }) {
                     </Button>
                     <Button
                         onClick={async () => {
+                            if (!validateForm()) return;
                             setIsOpen(false);
-                            const { timestamp } = await insertEmail();
+                            let reqBody = formData;
+                            if (!formData.private)
+                                reqBody = filterBadWords(formData);
+                            const { timestamp } = await insertEmail(reqBody);
                             handlePending(true);
-                            await new Promise((resolve, reject) =>
+                            await new Promise((resolve) =>
                                 setTimeout(() => resolve(true), 500)
                             );
-                            await sendEmail();
+                            await sendEmail(reqBody);
                             await patchEmail(formData.name, timestamp);
                             handlePending(false);
                         }}

@@ -44,8 +44,8 @@ export default function App() {
 
         getEmails();
     }, [pending]);
-
     console.log(tableData);
+
     const handlePending = (bool) => {
         setPending(bool);
     };

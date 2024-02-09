@@ -1,5 +1,5 @@
 import EmailsTable from "./EmailsTable";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
     Pagination,
     PaginationGap,

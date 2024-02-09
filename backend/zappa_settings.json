@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "app_function": "server.app",
+        "aws_region": "us-east-2",
+        "profile_name": "default",
+        "project_name": "backend",
+        "runtime": "python3.11",
+        "s3_bucket": "zappa-yearofdragon"
+    }
+}

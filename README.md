@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./frontend/public/logo.svg" width="100" />
+  <img src="./frontend/public/logo.svg" style="background:#CC232A; padding:5px; border-radius:8px;" width="100" />
 </p>
 <p align="center">
     <h1 align="center">Happy Year of the Dragon</h1>
